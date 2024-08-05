@@ -1,0 +1,4 @@
+pandas
+sentence_trasformers
+scki-learn
+matplotlib
