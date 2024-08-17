@@ -1,4 +1,6 @@
 pandas
-sentence_trasformers
-scki-learn
 matplotlib
+numpy
+scikit-learn
+sentences-transformers
+nltk

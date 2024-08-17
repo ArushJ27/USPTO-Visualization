@@ -1,0 +1,52 @@
+import pandas as pd
+import json
+import argparse
+
+def build_product_tree(tsv_path, output_path):
+    dtype = {
+        'Class': str,
+        'Common Words': str,
+        'Description': str
+    }
+
+    # Load the TSV file
+    df = pd.read_csv(tsv_path, dtype=dtype, sep='\t')
+
+    # Initialize the tree dictionary
+    product_tree = {}
+
+    # Populate the tree
+    for _, row in df.iterrows():
+        class_ = row['Class']
+        common_words = row['Common Words']
+        description = row['Description']
+
+        if class_ not in product_tree:
+            product_tree[class_] = {}
+
+        if common_words not in product_tree[class_]:
+            product_tree[class_][common_words] = []
+
+        if description not in product_tree[class_][common_words]:
+            product_tree[class_][common_words].append(description)
+
+    # Convert the dictionary to JSON and save it to a file
+    with open(output_path, 'w') as json_file:
+        json.dump(product_tree, json_file, indent=4)
+
+def main():
+    parser = argparse.ArgumentParser(description="Build a tree of product classes from a TSV file.")
+    parser.add_argument("tsv_path", type=str, nargs='?', default="idmanual_clusters_common_words.tsv", help="Path to the input TSV file")
+    parser.add_argument("output_path", type=str, nargs='?', default="output.json", help="Path to the output JSON file")
+
+    args = parser.parse_args()
+
+    build_product_tree(args.tsv_path, args.output_path)
+
+    # Test line to print the product tree
+    with open(args.output_path, 'r') as json_file:
+        product_tree = json.load(json_file)
+        print(json.dumps(product_tree, indent=4))
+
+if __name__ == "__main__":
+    main()
